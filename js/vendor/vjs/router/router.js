@@ -34,8 +34,7 @@ import {
 
 /**
  * VJS Router
- * clean vanilla js Router for building SAP applications
- * utilizing native web components
+ * Router for SPAs utilizing native web components
  */
 export class Router {
 
