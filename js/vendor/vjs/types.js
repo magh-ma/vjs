@@ -1,0 +1,44 @@
+/**
+ * private route
+ * @typedef {Object} IPrivateRoute
+ * @property {RegExp} matchExp - RegExp used to match urls
+ */
+
+/**
+ * @typedef {Object} IRouterLocation
+ * @property {RouterLocation} location
+ */
+
+/**
+ * view component of the router
+ * @typedef {HTMLElement & { location: RouterLocation }} ViewComponent
+ */
+
+/**
+ * options
+ * @typedef {Object} RouterOptions
+ * @property {HTMLElement} container - HTMLElement utilized as container for the components
+ * @property {Array.<PrivateRoute>} routes - array of internal route objects
+ * @property {boolean} lazy - lazy loading for components
+ * @property {HTMLElement} anchorScan - HTMLElement used to scan for anchor elements
+ */
+
+/**
+ * public route
+ * @typedef {Object} PublicRoute
+ * @property {string} path - path of the route
+ * @property {string} component - HTML tag of the component
+ */
+ 
+/**
+ * private route
+ * @typedef {PublicRoute & IPrivateRoute} PrivateRoute
+ */
+
+ /**
+ * router location state
+ * @typedef {Object} RouterLocation
+ * @property {Object.<string, string>} parameter - holds the parameter of the location
+ * @property {string} component - holds the HTMLTag of the component
+ */
+
