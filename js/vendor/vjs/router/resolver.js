@@ -35,29 +35,30 @@ export class Resolver {
    * @returns {RegExp}
    */
   _createMatchExp(path) {
-    /**
-     * returns the replace string for matches
-     * @param {string} match 
-     * @param {string} p1 
-     * @param {number} offset 
-     * @param {string} string 
-     * @returns {string}
-     */
-    const replaceCallback = (match, p1, offset, string) => {      
-      const pOffset = offset + match.length;
-      const isOptional = (string.substring(pOffset, pOffset + 1) === '?');
-      
-      let str = `(?<${p1}>[\\w-]+)`;
-      if (isOptional) {
-        str = '?' + str;
-      };
-
-      return str;
-    };
-    const regexStr = path.replace(/:([\w-]+)/g, replaceCallback);
+    const regexStr = path.replace(/:([\w-]+)/g, this.replaceCallback);
 
     return new RegExp(`^${regexStr}/?$`);
   }
+
+  /**
+   * returns the replace string for matches
+   * @param {string} match 
+   * @param {string} p1 
+   * @param {number} offset 
+   * @param {string} string 
+   * @returns {string}
+   */
+  replaceCallback(match, p1, offset, string) {      
+    const pOffset = offset + match.length;
+    const isOptional = (string.substring(pOffset, pOffset + 1) === '?');
+
+    let str = `(?<${p1}>[\\w-]+)`;
+    if (isOptional) {
+      str = '?' + str;
+    };
+
+    return str;
+  };
 
   /**
    * returns a route object for internal use
