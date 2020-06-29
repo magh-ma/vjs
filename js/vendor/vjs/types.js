@@ -1,6 +1,6 @@
 /**
  * private route
- * @typedef {Object} IPrivateRoute
+ * @typedef {Object} IResolverRoute
  * @property {RegExp} matchExp - RegExp used to match urls
  */
 
@@ -18,21 +18,21 @@
  * options
  * @typedef {Object} RouterOptions
  * @property {HTMLElement} container - HTMLElement utilized as container for the components
- * @property {Array.<PrivateRoute>} routes - array of internal route objects
+ * @property {Array.<ResolverRoute>} routes - array of internal route objects
  * @property {boolean} lazy - lazy loading for components
  * @property {HTMLElement} anchorScan - HTMLElement used to scan for anchor elements
  */
 
 /**
  * public route
- * @typedef {Object} PublicRoute
+ * @typedef {Object} RouterRoute
  * @property {string} path - path of the route
  * @property {string} component - HTML tag of the component
  */
  
 /**
  * private route
- * @typedef {PublicRoute & IPrivateRoute} PrivateRoute
+ * @typedef {RouterRoute & IResolverRoute} ResolverRoute
  */
 
  /**

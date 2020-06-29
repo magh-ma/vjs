@@ -7,7 +7,6 @@
 // replace pseudo lazy loading with real lazy loading
 
 // REFACTORING
-// * create resolver
 // * "typecast" options into map?
 
 /**
@@ -17,6 +16,7 @@
  * @author Samuel Weber <info@samuelweber.at>
  * @version 0.1
  * 
+ * @requires '.
  * @requires './../util/dom.js:flushElement
  * @requires './../util/object.js:isEqual
  * @requires './../constants.js:DEFAULT_OPTIONS
@@ -25,6 +25,7 @@
 import './../types.js';
 import { flushElement } from './../util/dom.js';
 import { isEqual } from './../util/object.js';
+import { Resolver } from './resolver.js';
 import {
   DEFAULT_OPTIONS,
   DEFAULT_LOCATION_STATE
@@ -65,6 +66,13 @@ export class Router {
      */
     this._location;
 
+    /**
+     * VJS Resolver
+     * @private
+     * @type {Resolver}
+     */
+    this._resolver = new Resolver();
+
     // force scope on methods used by eventListener
     this._onAnchorClick = this._onAnchorClick.bind(this);
 
@@ -73,7 +81,7 @@ export class Router {
     this._setLocation(DEFAULT_LOCATION_STATE);
 
     if(!this._options.lazy) {
-      this._options.routes.forEach((r) => this._initComponent(r.component));
+      this._resolver.getRoutes().forEach((r) => this._initComponent(r.component));
     }
 
     if(this._options.anchorScan) {
@@ -103,38 +111,6 @@ export class Router {
   }
 
   /**
-   * returns the regular expression to perform
-   * search queries on the routes
-   * @private
-   * @param {string} path 
-   * @returns {RegExp}
-   */
-  _getMatchExp(path) {
-    /**
-     * returns the replace string for matches
-     * @param {string} match 
-     * @param {string} p1 
-     * @param {number} offset 
-     * @param {string} string 
-     * @returns {string}
-     */
-    const replaceCallback = (match, p1, offset, string) => {      
-      const pOffset = offset + match.length;
-      const isOptional = (string.substring(pOffset, pOffset + 1) === '?');
-      
-      let str = `(?<${p1}>[\\w-]+)`;
-      if (isOptional) {
-        str = '?' + str;
-      };
-
-      return str;
-    };
-    const regexStr = path.replace(/:([\w-]+)/g, replaceCallback);
-
-    return new RegExp(`^${regexStr}/?$`);
-  }
-
-  /**
    * scan for anchor elements and add event listener
    * @private
    * @param {HTMLElement} root - element used for anchorScan
@@ -142,21 +118,6 @@ export class Router {
   _anchorScan(root) {
     const anchorElement = [...root.querySelectorAll('a')];
     anchorElement.forEach((a) => a.addEventListener('click', this._onAnchorClick));
-  }
-
-  /**
-   * returns a route object for internal use
-   * @private
-   * @param {PublicRoute} route 
-   * @returns {PrivateRoute}
-   */
-  _createRoute(route) {
-    const matchExp = this._getMatchExp(route.path);
-    return {
-      matchExp, 
-      path: route.path,
-      component: route.component,       
-    }
   }
 
   /**
@@ -240,44 +201,44 @@ export class Router {
     return { ...this._options };
   }
 
+  /**
+   * load component by url
+   * @public
+   * @param {string} url 
+   */
+  goTo(url) {
+    this._resolver.resolve(url)
+      .then(({ componentTag, parameter }) => {
+        this._loadComponent(componentTag, parameter);
+      })
+      .catch((err) => console.log('error>', err));
+  }
 
   /**
    * set routes for the router
    * @public
-   * @param {Array.<PublicRoute>} routes 
+   * @param {Array.<RouterRoute>} routes
    */
   setRoutes(routes) {
-    this._options.routes = routes.map((route) => this._createRoute(route));
+    this._resolver.setRoutes(routes);
   }
 
   /**
    * returns configured routes
    * @public
-   * @returns {Array.<PublicRoute>}
+   * @returns {Array.<RouterRoute>}
    */
   getRoutes() {
-    return this._options.routes.map((route) => ({
-      path: route.path,
-      component: route.component,
-    }));
-  }
-
-  /**
-   * adds a route to the existing configuration
-   * @public
-   * @param {PublicRoute} route 
-   */
-  addRoute(route) {
-    this._options.routes.push(this._createRoute(route));
+    return this._resolver.getRoutes();
   }
 
   /**
    * removes a route from the existing configuration
    * @public
-   * @param {PublicRoute} route 
+   * @param {RouterRoute} route 
    */
   removeRoute(route) {
-    this._options.routes = this._options.routes.filter((r) => r.path !== route.path);
+    this._resolver.removeRoute(route);
   }
 
   /**
@@ -287,24 +248,6 @@ export class Router {
    * @param {string} path 
    */
   removeRouteByPath(path) {
-    this._options.routes = this._options.routes.filter((r) => r.path !== path);
+    this._resolver.removeRouteByPath(path);
   }
-
-  /**
-   * load component by url
-   * @public
-   * @param {string} url 
-   */
-  goTo(url) {
-    for (let i = 0; i < this._options.routes.length; ++i) {
-      const match = url.match(this._options.routes[i].matchExp);
-      if (match) {
-        const componentTag = this._options.routes[i].component;
-        // @ts-ignore - default ts compiler does not support group property on RegExpMatchArray
-        const parameter = match.groups;
-        this._loadComponent(componentTag, parameter);
-        return;
-      }
-    }
-  }  
 }

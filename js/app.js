@@ -23,7 +23,7 @@ router.goTo('/log/12');
 router.goTo('/log/12/');
 router.goTo('/log/12/edit');
 */
-router.goTo('/');
+router.goTo('/log/12/edit');
 
 // @ts-ignore
 window.router = router;
