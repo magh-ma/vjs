@@ -54,7 +54,7 @@ export class Resolver {
 
     let str = `(?<${p1}>[\\w-]+)`;
     if (isOptional) {
-      str = '?' + str;
+      str += '?';
     };
 
     return str;
