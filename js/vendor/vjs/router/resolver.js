@@ -35,20 +35,21 @@ export class Resolver {
    * @returns {RegExp}
    */
   _createMatchExp(path) {
-    const regexStr = path.replace(/:([\w-]+)/g, this.replaceCallback);
+    const regexStr = path.replace(/:([\w-]+)/g, this._replaceCallback);
 
     return new RegExp(`^${regexStr}/?$`);
   }
 
   /**
    * returns the replace string for matches
+   * @private
    * @param {string} match 
    * @param {string} p1 
    * @param {number} offset 
    * @param {string} string 
    * @returns {string}
    */
-  replaceCallback(match, p1, offset, string) {      
+  _replaceCallback(match, p1, offset, string) {      
     const pOffset = offset + match.length;
     const isOptional = (string.substring(pOffset, pOffset + 1) === '?');
 

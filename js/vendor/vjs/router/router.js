@@ -7,6 +7,7 @@
 // replace pseudo lazy loading with real lazy loading
 
 // REFACTORING
+// Resolver _replaceCallback check isOptional already in the regex as p2
 // * "typecast" options into map?
 
 /**
