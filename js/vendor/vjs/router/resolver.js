@@ -23,8 +23,6 @@ export class Resolver {
      * @type {Array.<ResolverRoute>}
      */
     this._routes = [];
-
-
   }
 
   /**
@@ -117,19 +115,19 @@ export class Resolver {
   }
 
   /**
-   * resolves URL into its componentTag and parameters
-   * @param {string} url 
+   * resolves pathname into its componentTag and parameters
+   * @param {string} pathname 
    * @returns {Promise}
    */
-  resolve(url) {
+  resolve(pathname) {
     return new Promise((resolve, reject) => {
       for (let i = 0; i < this._routes.length; ++i) {
-        const match = url.match(this._routes[i].matchExp);
+        const match = pathname.match(this._routes[i].matchExp);
         if (match) {
           const componentTag = this._routes[i].component;
           // @ts-ignore - default ts compiler does not support group property on RegExpMatchArray
           const parameter = match.groups;
-          resolve({ componentTag, parameter });
+          resolve({ componentTag, parameter, pathname});
         }
       }
       reject({

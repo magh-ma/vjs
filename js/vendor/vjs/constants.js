@@ -5,7 +5,7 @@
 export const DEFAULT_OPTIONS = {
   container: null,
   routes: [],
-  lazy: true,
+  initViewsAtStart: false,
   anchorScan: null
 };
 

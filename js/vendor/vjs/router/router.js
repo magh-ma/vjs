@@ -1,13 +1,13 @@
 // TODO
-// history
+// don't add another popstate if its the same then the previous one
 // event system
 // redirects
 // animated transitions
 // test in firefox und safari
-// replace pseudo lazy loading with real lazy loading
+// lazy loading
 
 // REFACTORING
-// Resolver _replaceCallback check isOptional already in the regex as p2
+// Resolver._replaceCallback => check isOptional already in the regex as p2
 // * "typecast" options into map?
 
 /**
@@ -20,6 +20,7 @@
  * @requires '.
  * @requires './../util/dom.js:flushElement
  * @requires './../util/object.js:isEqual
+ * @requires './resolver.js:Resolver
  * @requires './../constants.js:DEFAULT_OPTIONS
  * @requires './../constants.js:DEFAULT_LOCATION_STATE
  */
@@ -76,18 +77,25 @@ export class Router {
 
     // force scope on methods used by eventListener
     this._onAnchorClick = this._onAnchorClick.bind(this);
+    this._onPopState = this._onPopState.bind(this);
 
-    // initialize router
+    // initialize Router
+
+    // set merged options
     this.setOptions(options);
+    // set default location state
     this._setLocation(DEFAULT_LOCATION_STATE);
-
-    if(!this._options.lazy) {
+    // init all view components if required
+    if(!this._options.initViewsAtStart) {
       this._resolver.getRoutes().forEach((r) => this._initComponent(r.component));
     }
-
-    if(this._options.anchorScan) {
+    // scan HTMLElement for HTMLAnchorElements and
+    // add eventListener 
+    if(this._options.anchorScan && this._options.anchorScan instanceof HTMLElement) {
       this._anchorScan(this._options.anchorScan)
-    }    
+    }
+    // bind callback to popstate event
+    window.onpopstate = this._onPopState;
   }
 
   /**
@@ -143,7 +151,7 @@ export class Router {
       this._initComponent(componentTag);
     }
 
-    // declare previous state
+    // set previous state
     const prevLocationState = this._getLocation();
 
     // update location state
@@ -170,13 +178,22 @@ export class Router {
   }
 
   /**
-   * click handler for anchor navigation anchor
+   * click handler for navigation anchor
    * @private
    * @param {MouseEvent} e 
    */
   _onAnchorClick(e) {
     e.preventDefault();
     this.goTo(/** @type {HTMLAnchorElement} **/(e.target).pathname);
+  }
+
+  /**
+   * load component and update history
+   * @param {PopStateEvent} e
+   */
+  _onPopState({ state }) {
+    this._loadComponent(state.componentTag, state.parameter);    
+    window.history.pushState(state, '', state.pathname);
   }
 
   /**
@@ -209,8 +226,14 @@ export class Router {
    */
   goTo(url) {
     this._resolver.resolve(url)
-      .then(({ componentTag, parameter }) => {
-        this._loadComponent(componentTag, parameter);
+      .then(({ componentTag, parameter, pathname }) => {
+        window.dispatchEvent(new PopStateEvent('popstate', {
+          state: {
+            componentTag,
+            pathname,
+            parameter,
+          }
+        }));
       })
       .catch((err) => console.log('error>', err));
   }
