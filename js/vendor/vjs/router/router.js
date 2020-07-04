@@ -1,8 +1,8 @@
 // TODO
 //
-// -> refactor goTo() 
-// -> add type definition for lifecycle method parameter
-
+// implement eslint
+// add type definition for lifecycle method parameter
+//
 // redirects
 // animated transitions
 // test in firefox und safari
@@ -10,6 +10,7 @@
 // error handling
 
 // REFACTORING
+// refactor goTo() 
 // * "typecast" options into map?
 
 /**
