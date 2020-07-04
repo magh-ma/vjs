@@ -1,7 +1,8 @@
 // TODO
-// refactor goTo!
 //
 // implement eslint
+// create readme :facepalm:
+// create changelog for repo
 // implement logLevels
 // add type definition for lifecycle method parameter
 //
@@ -12,7 +13,6 @@
 // error handling
 
 // REFACTORING
-// refactor goTo()
 // * "typecast" options into map?
 
 /**
