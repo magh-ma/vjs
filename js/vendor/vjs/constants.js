@@ -20,3 +20,15 @@ export const DEFAULT_LOCATION_STATE = {
   parameter: {},
   pathname: null,
 };
+
+/**
+ * @constant
+ * @type {string} string identifier for the vjs router click event
+ */
+export const EVT_ONCLICK = 'vjs:router:click';
+
+/**
+ * @constant
+ * @type {string} string identifier for the vjs router popstate event
+ */
+export const EVT_POPSTATE = 'vjs:router:popstate'

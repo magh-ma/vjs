@@ -1,5 +1,5 @@
 // TODO
-// event system
+// expand lifecycle hooks for "view components"
 // redirects
 // animated transitions
 // test in firefox und safari
@@ -28,7 +28,9 @@ import { isEqual } from './../util/object.js';
 import { Resolver } from './resolver.js';
 import {
   DEFAULT_OPTIONS,
-  DEFAULT_LOCATION_STATE
+  DEFAULT_LOCATION_STATE,
+  EVT_ONCLICK,
+  EVT_POPSTATE
 } from './../constants.js';
 
 
@@ -93,7 +95,7 @@ export class Router {
       this._anchorScan(this._options.anchorScan)
     }
     // bind callback to popstate event
-    window.onpopstate = this._onPopState;
+    window.addEventListener('popstate', this._onPopState);
   }
 
   /**
@@ -159,13 +161,23 @@ export class Router {
   }
 
   /**
+   * @param {string} type 
+   * @param {object} detail
+   */
+  _dispatchRouterEvent(type, detail) {
+    window.dispatchEvent(new CustomEvent(type, { detail }));
+  }
+
+  /**
    * click handler for navigation anchor
    * @private
    * @param {MouseEvent} e 
    */
   _onAnchorClick(e) {
     e.preventDefault();
-    this.goTo(/** @type {HTMLAnchorElement} **/(e.target).pathname);
+    const pathname = /** @type {HTMLAnchorElement} **/(e.target).pathname;
+    this._dispatchRouterEvent(EVT_ONCLICK, { pathname });
+    this.goTo(pathname);
   }
 
   /**
@@ -173,6 +185,7 @@ export class Router {
    * @param {PopStateEvent} e
    */
   _onPopState({ state }) {
+    this._dispatchRouterEvent(EVT_POPSTATE, state);
     this._displayComponent(state);
   }
 

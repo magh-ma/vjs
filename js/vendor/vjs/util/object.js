@@ -3,8 +3,7 @@
  * @param {any} obj
  */
 export const isObject = (obj) => {
-  var type = typeof obj;
-  return (type === 'function' || (type === 'object' && !!obj && !Array.isArray(obj)));
+  return typeof obj === 'object' && !!obj;
 };
 
 /**
