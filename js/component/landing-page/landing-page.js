@@ -26,7 +26,14 @@ export class LandingPage extends View {
     console.log('LandingPage.onBeforeLeave', {
       prevState,
       nextState,
-    })
+    });
+  }
+
+  onAfterLeave(prevState, nextState) {
+    console.log('LandingPage.onAfterLeave', {
+      prevState,
+      nextState,
+    });
   }
 }
 

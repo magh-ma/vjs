@@ -1,8 +1,7 @@
 // TODO
 //
 // -> refactor goTo() 
-// -> add typedefinitions for events
-// -> add typedefinition for lifecycle methods
+// -> add type definition for lifecycle method parameter
 
 // redirects
 // animated transitions
@@ -39,8 +38,6 @@ import {
   EVT_BEFORE_LEAVE,
   EVT_AFTER_LEAVE
 } from './../constants.js';
-
-
 
 /**
  * VJS Router
@@ -169,7 +166,6 @@ export class Router {
    * @param {object} detail
    */
   _dispatchRouterEvent(type, detail) {
-    console.log({ type, detail })
     window.dispatchEvent(new CustomEvent(type, { detail }));
   }
 
