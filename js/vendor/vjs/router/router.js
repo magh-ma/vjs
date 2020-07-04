@@ -170,6 +170,7 @@ export class Router {
   }
 
   /**
+   * @private
    * @param {string} type 
    * @param {object} detail
    */
@@ -178,6 +179,11 @@ export class Router {
     window.dispatchEvent(new CustomEvent(type, { detail }));
   }
 
+  /**
+   * @private
+   * @param {string} componentTag
+   * @returns {ViewComponent}
+   */
   _getCachedComponentByTag(componentTag) {
     if(componentTag === null) return null;
 
@@ -185,6 +191,24 @@ export class Router {
       this._initComponent(componentTag);
     }
     return this._cache.get(componentTag);
+  }
+
+  /**
+   * @private
+   * @param {ViewComponent} component 
+   * @param {string} callbackName 
+   * @param {string} eventIdentifier 
+   * @param {object} payload 
+   */
+  _runHookIfAvailable(component, callbackName, eventIdentifier, payload) {
+    // check if there is a callback we have to invoke
+    if(typeof component[callbackName] === 'function') {
+      // invoke callback
+      component[callbackName](payload);
+    }
+    
+    // dispatch beforeLeave event
+    this._dispatchRouterEvent(eventIdentifier, payload);
   }
 
   /**
@@ -260,14 +284,8 @@ export class Router {
           // fetch current view component if possible
           const prevComponent = this._getCachedComponentByTag(this._getLocation().componentTag);
           if(prevComponent !== null) {
-            // check if there is a callback we have to invoke
-            if(typeof prevComponent.onBeforeLeave === 'function') {
-              // invoke callback
-              prevComponent.onBeforeLeave(detail);
-            }
-            
-            // dispatch beforeLeave event
-            this._dispatchRouterEvent(EVT_BEFORE_LEAVE, detail);
+            // run lifecycle hooks if available
+            this._runHookIfAvailable(prevComponent, 'onBeforeLeave', EVT_BEFORE_LEAVE, detail);
           }
 
           // update history and dispatch popstate event
@@ -275,40 +293,19 @@ export class Router {
           this._dispatchRouterEvent(EVT_POPSTATE, state);
 
           if(prevComponent !== null) {
-            // compose detail object
-            // check if there is a callback we have to invoke
-            if(typeof prevComponent.onAfterLeave === 'function') {
-              // invoke callback
-              prevComponent.onAfterLeave(detail);
-            } 
-            // dispatch beforeLeave event
-            this._dispatchRouterEvent(EVT_AFTER_LEAVE, detail)
+            // run lifecycle hooks if available
+            this._runHookIfAvailable(prevComponent, 'onAfterLeave', EVT_AFTER_LEAVE, detail);
           }
 
           const nextComponent = this._getCachedComponentByTag(state.componentTag);
-          // check if there is a callback we have to invoke
-          if(typeof nextComponent.onBeforeEnter === 'function') {
-            // invoke callback
-            nextComponent.onBeforeEnter(detail);
-          } 
-          // dispatch beforeLeave event
-          this._dispatchRouterEvent(EVT_BEFORE_ENTER, detail);
+          // run lifecycle hooks if available
+          this._runHookIfAvailable(nextComponent, 'onBeforeEnter', EVT_BEFORE_ENTER, detail);
 
+          // display component
           this._displayComponent(state);
 
-          // check if there is a callback we have to invoke
-          if(typeof nextComponent.onAfterEnter === 'function') {
-            // invoke callback
-            nextComponent.onAfterEnter(detail);
-          } 
-          // dispatch beforeLeave event
-          this._dispatchRouterEvent(EVT_AFTER_ENTER, detail);
-
-
-
-          
-
-
+          // run lifecycle hooks if available
+          this._runHookIfAvailable(nextComponent, 'onAfterEnter', EVT_BEFORE_ENTER, detail);
         }
       })
       .catch((err) => console.log('error>', err));

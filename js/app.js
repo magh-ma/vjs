@@ -13,7 +13,7 @@ const options = {
     { path: '.*', component: 'error-page', },
   ],
   anchorScan: document.querySelector('body'),
-  debug: true,
+  debug: false,
 }
 const router = new Router(options);
 router.goTo('/');
