@@ -1,5 +1,4 @@
 // TODO
-// don't add another popstate if its the same then the previous one
 // event system
 // redirects
 // animated transitions
@@ -141,36 +140,19 @@ export class Router {
   /**
    * this method will handle loading in future ;)
    * @private
-   * @param {string} componentTag 
-   * @param {Object.<string, string>} parameter 
+   * @param {RouterLocation} state
    */
-  _displayComponent(componentTag, parameter) {
+  _displayComponent(state) {
     // init component if not already in cache
-    if(!this._cache.has(componentTag)) {
-      this._initComponent(componentTag);
+    if(!this._cache.has(state.componentTag)) {
+      this._initComponent(state.componentTag);
     }
-
-    // set previous state
-    const prevLocationState = this._getLocation();
-
-    // update location state
-    this._setLocation({
-      parameter: parameter || {},
-      component: componentTag,
-    });
-
-    // declare next state
-    const nextState = this._getLocation();
 
     // get component and update location object
-    const component = this._cache.get(componentTag);
-    component.location = nextState;
+    const component = this._cache.get(state.componentTag);
+    this._setLocation(state);
+    component.location = this._getLocation();
 
-    // guard clause to prevent unnecessary rendering
-    if(isEqual(prevLocationState, nextState)) {
-      return;
-    }
-    
     // render component
     flushElement(this._options.container);
     this._options.container.appendChild(component);
@@ -191,7 +173,7 @@ export class Router {
    * @param {PopStateEvent} e
    */
   _onPopState({ state }) {
-    this._displayComponent(state.componentTag, state.parameter);
+    this._displayComponent(state);
   }
 
   /**
@@ -225,8 +207,10 @@ export class Router {
   goTo(url) {
     this._resolver.resolve(url)
       .then((state) => {
-        window.history.pushState(state, '', state.pathname);
-        window.dispatchEvent(new PopStateEvent('popstate', { state }));
+        if(!isEqual(this._getLocation(), state)) {
+          window.history.pushState(state, '', state.pathname);
+          window.dispatchEvent(new PopStateEvent('popstate', { state }));
+        }
       })
       .catch((err) => console.log('error>', err));
   }
