@@ -19,6 +19,8 @@
  * @property {RouterLocation} location
  * @property {function} onBeforeLeave
  * @property {function} onAfterLeave
+ * @property {function} onBeforeEnter
+ * @property {function} onAfterEnter
  */
 
 /**

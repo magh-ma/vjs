@@ -37,7 +37,9 @@ import {
   EVT_CLICK,
   EVT_POPSTATE,
   EVT_BEFORE_LEAVE,
-  EVT_AFTER_LEAVE
+  EVT_AFTER_LEAVE,
+  EVT_BEFORE_ENTER,
+  EVT_AFTER_ENTER
 } from './../constants.js';
 
 /**
@@ -82,6 +84,7 @@ export class Router {
 
     // force scope on methods used by eventListener
     this._onAnchorClick = this._onAnchorClick.bind(this);
+    this._onPopState = this._onPopState.bind(this);
 
     // initialize Router
 
@@ -98,6 +101,8 @@ export class Router {
     if(this._options.anchorScan && this._options.anchorScan instanceof HTMLElement) {
       this._anchorScan(this._options.anchorScan)
     }
+
+    window.addEventListener('popstate', this._onPopState);
   }
 
   /**
@@ -167,6 +172,7 @@ export class Router {
    * @param {object} detail
    */
   _dispatchRouterEvent(type, detail) {
+    console.log('dispatch', { type, detail });
     window.dispatchEvent(new CustomEvent(type, { detail }));
   }
 
@@ -189,6 +195,11 @@ export class Router {
     const pathname = /** @type {HTMLAnchorElement} **/(e.target).pathname;
     this._dispatchRouterEvent(EVT_CLICK, { pathname });
     this.goTo(pathname);
+  }
+
+  _onPopState({ state }) {
+    console.log('_onPopState');
+    this._displayComponent(state);
   }
 
   /**
@@ -224,14 +235,14 @@ export class Router {
       .then((state) => {
         // guard clause checking if there is a state change
         if(!isEqual(this._getLocation(), state)) {
+          // compose detail object
+          const detail = {
+            prevLocation: this._getLocation(),
+            nextLocation: state,
+          };
           // fetch current view component if possible
           const prevComponent = this._getCachedComponentByTag(this._getLocation().componentTag);
           if(prevComponent !== null) {
-            // compose detail object
-            const detail = {
-              prevLocation: this._getLocation(),
-              nextLocation: state,
-            };
             // check if there is a callback we have to invoke
             if(typeof prevComponent.onBeforeLeave === 'function') {
               // invoke callback
@@ -244,15 +255,10 @@ export class Router {
 
           // update history and dispatch popstate event
           window.history.pushState(state, '', state.pathname);
-          window.dispatchEvent(new PopStateEvent('popstate', { state }));
           this._dispatchRouterEvent(EVT_POPSTATE, state);
 
           if(prevComponent !== null) {
             // compose detail object
-            const detail = {
-              prevLocation: this._getLocation(),
-              nextLocation: state,
-            };
             // check if there is a callback we have to invoke
             if(typeof prevComponent.onAfterLeave === 'function') {
               // invoke callback
@@ -262,7 +268,30 @@ export class Router {
             this._dispatchRouterEvent(EVT_AFTER_LEAVE, detail)
           }
 
+          const nextComponent = this._getCachedComponentByTag(state.componentTag);
+          // check if there is a callback we have to invoke
+          if(typeof nextComponent.onBeforeEnter === 'function') {
+            // invoke callback
+            nextComponent.onBeforeEnter(detail);
+          } 
+          // dispatch beforeLeave event
+          this._dispatchRouterEvent(EVT_BEFORE_ENTER, detail);
+
           this._displayComponent(state);
+
+          // check if there is a callback we have to invoke
+          if(typeof nextComponent.onAfterEnter === 'function') {
+            // invoke callback
+            nextComponent.onAfterEnter(detail);
+          } 
+          // dispatch beforeLeave event
+          this._dispatchRouterEvent(EVT_AFTER_ENTER, detail);
+
+
+
+          
+
+
         }
       })
       .catch((err) => console.log('error>', err));
