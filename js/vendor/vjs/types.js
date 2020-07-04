@@ -11,7 +11,14 @@
 
 /**
  * view component of the router
- * @typedef {HTMLElement & { location: RouterLocation }} ViewComponent
+ * @typedef {HTMLElement & IView} ViewComponent
+ */
+
+/**
+ * @typedef {Object} IView
+ * @property {RouterLocation} location
+ * @property {function} onBeforeLeave
+ * @property {function} onAfterLeave
  */
 
 /**
