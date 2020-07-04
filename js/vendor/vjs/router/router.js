@@ -29,7 +29,7 @@ import { Resolver } from './resolver.js';
 import {
   DEFAULT_OPTIONS,
   DEFAULT_LOCATION_STATE,
-  EVT_ONCLICK,
+  EVT_CLICK,
   EVT_POPSTATE
 } from './../constants.js';
 
@@ -176,7 +176,7 @@ export class Router {
   _onAnchorClick(e) {
     e.preventDefault();
     const pathname = /** @type {HTMLAnchorElement} **/(e.target).pathname;
-    this._dispatchRouterEvent(EVT_ONCLICK, { pathname });
+    this._dispatchRouterEvent(EVT_CLICK, { pathname });
     this.goTo(pathname);
   }
 

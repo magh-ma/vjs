@@ -25,10 +25,34 @@ export const DEFAULT_LOCATION_STATE = {
  * @constant
  * @type {string} string identifier for the vjs router click event
  */
-export const EVT_ONCLICK = 'vjs:router:click';
+export const EVT_CLICK = 'vjs:router:click';
 
 /**
  * @constant
  * @type {string} string identifier for the vjs router popstate event
  */
 export const EVT_POPSTATE = 'vjs:router:popstate'
+
+/**
+ * @constant
+ * @type {string} string identifier for the vjs router beforeLeave event
+ */
+export const EVT_BEFORE_LEAVE = 'vjs:view:beforeLeave'
+
+/**
+ * @constant
+ * @type {string} string identifier for the vjs router afterLeave event
+ */
+export const EVT_AFTER_LEAVE = 'vjs:view:afterLeave'
+
+/**
+ * @constant
+ * @type {string} string identifier for the vjs router beforeEnter event
+ */
+export const EVT_BEFORE_ENTER = 'vjs:view:beforeEnter'
+
+/**
+ * @constant
+ * @type {string} string identifier for the vjs router afterEnter event
+ */
+export const EVT_AFTER_ENTER = 'vjs:view:afterEnter'
