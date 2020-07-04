@@ -113,7 +113,7 @@ export class Resolver {
   }
 
   /**
-   * resolves pathname into its componentTag and parameters
+   * resolves pathname into its componentKey and parameters
    * @param {string} pathname 
    * @returns {Promise}
    */
@@ -123,10 +123,10 @@ export class Resolver {
       for (let i = 0; i < this._routes.length; ++i) {
         const match = strippedPathname.match(this._routes[i].matchExp);
         if (match) {
-          const componentTag = this._routes[i].component;
+          const componentKey = this._routes[i].component;
           // @ts-ignore - default ts compiler does not support group property on RegExpMatchArray
           const parameter = match.groups;
-          resolve({ componentTag, parameter, pathname});
+          resolve({ componentKey, parameter, pathname});
         }
       }
       reject({

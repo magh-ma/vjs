@@ -141,11 +141,11 @@ export class Router {
   /**
    * initialize component and add it to the cache
    * @private
-   * @param {string} componentTag 
+   * @param {string} componentKey 
    */
-  _initComponent(componentTag) {
-    const component = /** @type {ViewComponent} **/(document.createElement(componentTag));
-    this._cache.set(componentTag, component);
+  _initComponent(componentKey) {
+    const component = /** @type {ViewComponent} **/(document.createElement(componentKey));
+    this._cache.set(componentKey, component);
   }
 
   /**
@@ -155,12 +155,12 @@ export class Router {
    */
   _displayComponent(state) {
     // init component if not already in cache
-    if(!this._cache.has(state.componentTag)) {
-      this._initComponent(state.componentTag);
+    if(!this._cache.has(state.componentKey)) {
+      this._initComponent(state.componentKey);
     }
 
     // get component and update location object
-    const component = this._cache.get(state.componentTag);
+    const component = this._cache.get(state.componentKey);
     this._setLocation(state);
     component.location = this._getLocation();
 
@@ -181,16 +181,16 @@ export class Router {
 
   /**
    * @private
-   * @param {string} componentTag
+   * @param {string} componentKey
    * @returns {ViewComponent}
    */
-  _getCachedComponentByTag(componentTag) {
-    if(componentTag === null) return null;
+  _getCachedComponentByKey(componentKey) {
+    if(componentKey === null) return null;
 
-    if(!this._cache.has(componentTag)) {
-      this._initComponent(componentTag);
+    if(!this._cache.has(componentKey)) {
+      this._initComponent(componentKey);
     }
-    return this._cache.get(componentTag);
+    return this._cache.get(componentKey);
   }
 
   /**
@@ -282,7 +282,7 @@ export class Router {
             nextLocation: state,
           };
           // fetch current view component if possible
-          const prevComponent = this._getCachedComponentByTag(this._getLocation().componentTag);
+          const prevComponent = this._getCachedComponentByKey(this._getLocation().componentKey);
           if(prevComponent !== null) {
             // run lifecycle hooks if available
             this._runHookIfAvailable(prevComponent, 'onBeforeLeave', EVT_BEFORE_LEAVE, detail);
@@ -297,7 +297,7 @@ export class Router {
             this._runHookIfAvailable(prevComponent, 'onAfterLeave', EVT_AFTER_LEAVE, detail);
           }
 
-          const nextComponent = this._getCachedComponentByTag(state.componentTag);
+          const nextComponent = this._getCachedComponentByKey(state.componentKey);
           // run lifecycle hooks if available
           this._runHookIfAvailable(nextComponent, 'onBeforeEnter', EVT_BEFORE_ENTER, detail);
 

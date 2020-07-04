@@ -48,7 +48,7 @@
  /**
  * router location state
  * @typedef {Object} RouterLocation
- * @property {string} componentTag - holds the HTMLTag of the component
+ * @property {string} componentKey - holds the HTMLTag of the component
  * @property {Object.<string, string>} parameter - holds the parameter of the location
  * @property {string} pathname - string of the current pathname
  */

@@ -17,7 +17,7 @@ export const DEFAULT_OPTIONS = {
  * @property {string} component
  */
 export const DEFAULT_LOCATION_STATE = {
-  componentTag: null,
+  componentKey: null,
   parameter: {},
   pathname: null,
 };
