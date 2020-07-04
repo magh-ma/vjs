@@ -21,6 +21,13 @@ export class LandingPage extends View {
   connectedCallback() {
     console.log('LandingPage.connectedCallback()');
   }
+
+  onBeforeLeave(prevState, nextState) {
+    console.log('LandingPage.onBeforeLeave', {
+      prevState,
+      nextState,
+    })
+  }
 }
 
 window.customElements.define('landing-page', LandingPage);

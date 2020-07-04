@@ -16,3 +16,5 @@ const options = {
 }
 const router = new Router(options);
 router.goTo('/');
+
+window.router = router;

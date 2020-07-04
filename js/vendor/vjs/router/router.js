@@ -1,9 +1,14 @@
 // TODO
-// expand lifecycle hooks for "view components"
+//
+// -> refactor goTo() 
+// -> add typedefinitions for events
+// -> add typedefinition for lifecycle methods
+
 // redirects
 // animated transitions
 // test in firefox und safari
 // lazy loading
+// error handling
 
 // REFACTORING
 // * "typecast" options into map?
@@ -30,7 +35,9 @@ import {
   DEFAULT_OPTIONS,
   DEFAULT_LOCATION_STATE,
   EVT_CLICK,
-  EVT_POPSTATE
+  EVT_POPSTATE,
+  EVT_BEFORE_LEAVE,
+  EVT_AFTER_LEAVE
 } from './../constants.js';
 
 
@@ -77,7 +84,6 @@ export class Router {
 
     // force scope on methods used by eventListener
     this._onAnchorClick = this._onAnchorClick.bind(this);
-    this._onPopState = this._onPopState.bind(this);
 
     // initialize Router
 
@@ -94,8 +100,6 @@ export class Router {
     if(this._options.anchorScan && this._options.anchorScan instanceof HTMLElement) {
       this._anchorScan(this._options.anchorScan)
     }
-    // bind callback to popstate event
-    window.addEventListener('popstate', this._onPopState);
   }
 
   /**
@@ -165,7 +169,17 @@ export class Router {
    * @param {object} detail
    */
   _dispatchRouterEvent(type, detail) {
+    console.log({ type, detail })
     window.dispatchEvent(new CustomEvent(type, { detail }));
+  }
+
+  _getCachedComponentByTag(componentTag) {
+    if(componentTag === null) return null;
+
+    if(!this._cache.has(componentTag)) {
+      this._initComponent(componentTag);
+    }
+    return this._cache.get(componentTag);
   }
 
   /**
@@ -178,15 +192,6 @@ export class Router {
     const pathname = /** @type {HTMLAnchorElement} **/(e.target).pathname;
     this._dispatchRouterEvent(EVT_CLICK, { pathname });
     this.goTo(pathname);
-  }
-
-  /**
-   * load component and update history
-   * @param {PopStateEvent} e
-   */
-  _onPopState({ state }) {
-    this._dispatchRouterEvent(EVT_POPSTATE, state);
-    this._displayComponent(state);
   }
 
   /**
@@ -220,9 +225,47 @@ export class Router {
   goTo(url) {
     this._resolver.resolve(url)
       .then((state) => {
+        // guard clause checking if there is a state change
         if(!isEqual(this._getLocation(), state)) {
+          // fetch current view component if possible
+          const prevComponent = this._getCachedComponentByTag(this._getLocation().componentTag);
+          if(prevComponent !== null) {
+            // compose detail object
+            const detail = {
+              prevLocation: this._getLocation(),
+              nextLocation: state,
+            };
+            // check if there is a callback we have to invoke
+            if(typeof prevComponent.onBeforeLeave === 'function') {
+              // invoke callback
+              prevComponent.onBeforeLeave(detail);
+            }
+            
+            // dispatch beforeLeave event
+            this._dispatchRouterEvent(EVT_BEFORE_LEAVE, detail);
+          }
+
+          // update history and dispatch popstate event
           window.history.pushState(state, '', state.pathname);
           window.dispatchEvent(new PopStateEvent('popstate', { state }));
+          this._dispatchRouterEvent(EVT_POPSTATE, state);
+
+          if(prevComponent !== null) {
+            // compose detail object
+            const detail = {
+              prevLocation: this._getLocation(),
+              nextLocation: state,
+            };
+            // check if there is a callback we have to invoke
+            if(typeof prevComponent.onAfterLeave === 'function') {
+              // invoke callback
+              prevComponent.onAfterLeave(detail);
+            } 
+            // dispatch beforeLeave event
+            this._dispatchRouterEvent(EVT_AFTER_LEAVE, detail)
+          }
+
+          this._displayComponent(state);
         }
       })
       .catch((err) => console.log('error>', err));
