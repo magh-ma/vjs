@@ -305,7 +305,7 @@ export class Router {
           this._displayComponent(state);
 
           // run lifecycle hooks if available
-          this._runHookIfAvailable(nextComponent, 'onAfterEnter', EVT_BEFORE_ENTER, detail);
+          this._runHookIfAvailable(nextComponent, 'onAfterEnter', EVT_AFTER_ENTER, detail);
         }
       })
       .catch((err) => console.log('error>', err));
