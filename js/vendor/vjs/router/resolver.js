@@ -33,27 +33,25 @@ export class Resolver {
    * @returns {RegExp}
    */
   _createMatchExp(path) {
-    const regexStr = path.replace(/:([\w-]+)/g, this._replaceCallback);
+    const regexStr = path.replace(/:([\w-]+)(\?{0,1})/g, this._replaceCallback);
 
-    return new RegExp(`^${regexStr}/?$`);
+    return new RegExp(`^${regexStr}$`);
   }
 
   /**
    * returns the replace string for matches
    * @private
    * @param {string} match 
-   * @param {string} p1 
+   * @param {string} groupName 
+   * @param {string} isOptionalModifierString 
    * @param {number} offset 
    * @param {string} string 
    * @returns {string}
    */
-  _replaceCallback(match, p1, offset, string) {      
-    const pOffset = offset + match.length;
-    const isOptional = (string.substring(pOffset, pOffset + 1) === '?');
-
-    let str = `(?<${p1}>[\\w-]+)`;
-    if (isOptional) {
-      str += '?';
+  _replaceCallback(match, groupName, isOptionalModifierString, offset, string) {
+    let str = `(?<${groupName}>[\\w-]+)`;
+    if (isOptionalModifierString === '?') {
+      str = '?' + str;
     };
 
     return str;
@@ -120,9 +118,10 @@ export class Resolver {
    * @returns {Promise}
    */
   resolve(pathname) {
+    const strippedPathname = pathname.replace(/\/$/, '') || '/';
     return new Promise((resolve, reject) => {
       for (let i = 0; i < this._routes.length; ++i) {
-        const match = pathname.match(this._routes[i].matchExp);
+        const match = strippedPathname.match(this._routes[i].matchExp);
         if (match) {
           const componentTag = this._routes[i].component;
           // @ts-ignore - default ts compiler does not support group property on RegExpMatchArray

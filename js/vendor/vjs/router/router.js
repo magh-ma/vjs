@@ -7,7 +7,6 @@
 // lazy loading
 
 // REFACTORING
-// Resolver._replaceCallback => check isOptional already in the regex as p2
 // * "typecast" options into map?
 
 /**
@@ -86,7 +85,7 @@ export class Router {
     // set default location state
     this._setLocation(DEFAULT_LOCATION_STATE);
     // init all view components if required
-    if(!this._options.initViewsAtStart) {
+    if(this._options.initViewsAtStart) {
       this._resolver.getRoutes().forEach((r) => this._initComponent(r.component));
     }
     // scan HTMLElement for HTMLAnchorElements and
@@ -145,7 +144,7 @@ export class Router {
    * @param {string} componentTag 
    * @param {Object.<string, string>} parameter 
    */
-  _loadComponent(componentTag, parameter) {
+  _displayComponent(componentTag, parameter) {
     // init component if not already in cache
     if(!this._cache.has(componentTag)) {
       this._initComponent(componentTag);
@@ -192,8 +191,7 @@ export class Router {
    * @param {PopStateEvent} e
    */
   _onPopState({ state }) {
-    this._loadComponent(state.componentTag, state.parameter);    
-    window.history.pushState(state, '', state.pathname);
+    this._displayComponent(state.componentTag, state.parameter);
   }
 
   /**
@@ -226,14 +224,9 @@ export class Router {
    */
   goTo(url) {
     this._resolver.resolve(url)
-      .then(({ componentTag, parameter, pathname }) => {
-        window.dispatchEvent(new PopStateEvent('popstate', {
-          state: {
-            componentTag,
-            pathname,
-            parameter,
-          }
-        }));
+      .then((state) => {
+        window.history.pushState(state, '', state.pathname);
+        window.dispatchEvent(new PopStateEvent('popstate', { state }));
       })
       .catch((err) => console.log('error>', err));
   }
