@@ -51,7 +51,7 @@ export class Resolver {
   _replaceCallback(match, groupName, isOptionalModifierString, offset, string) {
     let str = `(?<${groupName}>[\\w-]+)`;
     if (isOptionalModifierString === '?') {
-      str = '?' + str;
+      str = `?${str}?`;
     };
 
     return str;
