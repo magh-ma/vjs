@@ -16,7 +16,3 @@ const options = {
 }
 const router = new Router(options);
 router.goTo('/');
-
-
-window.addEventListener('vjs:router:click', (e) => console.log('#', e));
-window.addEventListener('vjs:router:popstate', (e) => console.log('>', e));
