@@ -7,6 +7,7 @@ export const DEFAULT_OPTIONS = {
   routes: [],
   initViewsAtStart: false,
   anchorScan: null,
+  debug: false,
 };
 
 /**

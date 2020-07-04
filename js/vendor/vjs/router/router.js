@@ -1,6 +1,8 @@
 // TODO
+// refactor goTo!
 //
 // implement eslint
+// implement logLevels
 // add type definition for lifecycle method parameter
 //
 // redirects
@@ -10,7 +12,7 @@
 // error handling
 
 // REFACTORING
-// refactor goTo() 
+// refactor goTo()
 // * "typecast" options into map?
 
 /**
@@ -172,7 +174,7 @@ export class Router {
    * @param {object} detail
    */
   _dispatchRouterEvent(type, detail) {
-    console.log('dispatch', { type, detail });
+    this._log('Router._dispatchRouterEvent', { type, detail });
     window.dispatchEvent(new CustomEvent(type, { detail }));
   }
 
@@ -183,6 +185,17 @@ export class Router {
       this._initComponent(componentTag);
     }
     return this._cache.get(componentTag);
+  }
+
+  /**
+   * produces a log entry in the devTools if enabled in options
+   * @param {string} reference 
+   * @param {any} payload 
+   */
+  _log(reference, payload) {
+    if(this._options.debug) {
+      console.log(reference, payload);
+    }
   }
 
   /**
@@ -197,8 +210,12 @@ export class Router {
     this.goTo(pathname);
   }
 
+  /**
+   * handles the back and forward inputs of the browser
+   * @private
+   * @param {PopStateEvent} e
+   */
   _onPopState({ state }) {
-    console.log('_onPopState');
     this._displayComponent(state);
   }
 

@@ -30,6 +30,7 @@
  * @property {Array.<ResolverRoute>} routes - array of internal route objects
  * @property {boolean} initViewsAtStart - initialize all view components
  * @property {HTMLElement} anchorScan - HTMLElement used to scan for anchor elements
+ * @property {boolean} debug - debug mode
  */
 
 /**
