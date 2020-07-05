@@ -28,7 +28,6 @@ VJS aims to be a lightweight framework for native web components which can be ut
       - [Events](#router-view-events)
     - [Location](#router-location)
 - [ToDo](#todo)
-  - implement ESLint
   - finish readme
   - create changelog
   - implement log level
