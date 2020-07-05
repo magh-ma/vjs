@@ -55,7 +55,7 @@ The source of VJS will be placed inside the `js/vendor/vjs` directory.
 > A router is a key component in most frontend frameworks. It is the piece of software in charge to organize the states of the application and switching between different views.
 
 Prepare the `index.html`:
-```markup
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
