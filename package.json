@@ -1,0 +1,23 @@
+{
+  "name": "vjs",
+  "version": "0.0.1",
+  "description": "lightweight vanilla javascript framework to build SPA with native web components\"",
+  "main": "index.js",
+  "dependencies": {
+    "eslint": "^7.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndTheGodsMadeLove/vjs.git"
+  },
+  "author": "Samuel Weber <info@samuelweber.at>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AndTheGodsMadeLove/vjs/issues"
+  },
+  "homepage": "https://github.com/AndTheGodsMadeLove/vjs#readme"
+}

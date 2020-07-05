@@ -39,13 +39,13 @@
  * @property {string} path - path of the route
  * @property {string} component - HTML tag of the component
  */
- 
+
 /**
  * private route
  * @typedef {RouterRoute & IResolverRoute} ResolverRoute
  */
 
- /**
+/**
  * router location state
  * @typedef {Object} RouterLocation
  * @property {string} componentKey - holds the HTMLTag of the component

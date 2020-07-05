@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2020
  * Samuel Weber, Rankweil, Austria
- * 
+ *
  * @author Samuel Weber <info@samuelweber.at>
  * @version 0.1
  */
@@ -11,12 +11,10 @@
  * Resolver utilized by VJS Router
  */
 export class Resolver {
-
   /**
    * initialize Resolver
    */
   constructor() {
-
     /**
      * routes
      * @private
@@ -29,7 +27,7 @@ export class Resolver {
    * returns the regular expression to perform
    * search queries on the routes
    * @private
-   * @param {string} path 
+   * @param {string} path
    * @returns {RegExp}
    */
   _createMatchExp(path) {
@@ -41,41 +39,39 @@ export class Resolver {
   /**
    * returns the replace string for matches
    * @private
-   * @param {string} match 
-   * @param {string} groupName 
-   * @param {string} isOptionalModifierString 
-   * @param {number} offset 
-   * @param {string} string 
+   * @param {string} match
+   * @param {string} groupName
+   * @param {string} isOptionalModifierString
    * @returns {string}
    */
-  _replaceCallback(match, groupName, isOptionalModifierString, offset, string) {
+  _replaceCallback(match, groupName, isOptionalModifierString) {
     let str = `(?<${groupName}>[\\w-]+)`;
     if (isOptionalModifierString === '?') {
       str = `?${str}?`;
-    };
+    }
 
     return str;
-  };
+  }
 
   /**
    * returns a route object for internal use
    * @private
-   * @param {RouterRoute} route 
+   * @param {RouterRoute} route
    * @returns {ResolverRoute}
    */
   _createRoute(route) {
     const matchExp = this._createMatchExp(route.path);
     return {
-      matchExp, 
+      matchExp,
       path: route.path,
-      component: route.component,       
-    }
+      component: route.component,
+    };
   }
-  
+
   /**
    * set routes for the router
    * @public
-   * @param {Array.<RouterRoute>} routes 
+   * @param {Array.<RouterRoute>} routes
    */
   setRoutes(routes) {
     this._routes = routes.map((route) => this._createRoute(route));
@@ -96,7 +92,7 @@ export class Resolver {
   /**
    * removes a route from the existing configuration
    * @public
-   * @param {RouterRoute} route 
+   * @param {RouterRoute} route
    */
   removeRoute(route) {
     this._routes = this._routes.filter((r) => r.path !== route.path);
@@ -106,7 +102,7 @@ export class Resolver {
    * remove a route from the existing configuration
    * filtered by the path property of the route object
    * @public
-   * @param {string} path 
+   * @param {string} path
    */
   removeRouteByPath(path) {
     this._routes = this._routes.filter((r) => r.path !== path);
@@ -114,7 +110,7 @@ export class Resolver {
 
   /**
    * resolves pathname into its componentKey and parameters
-   * @param {string} pathname 
+   * @param {string} pathname
    * @returns {Promise}
    */
   resolve(pathname) {
@@ -126,11 +122,11 @@ export class Resolver {
           const componentKey = this._routes[i].component;
           // @ts-ignore - default ts compiler does not support group property on RegExpMatchArray
           const parameter = match.groups;
-          resolve({ componentKey, parameter, pathname});
+          resolve({ componentKey, parameter, pathname });
         }
       }
       reject({
-        error: 404
+        error: 404,
       });
     });
   }

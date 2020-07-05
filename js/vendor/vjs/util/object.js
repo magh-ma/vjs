@@ -2,9 +2,7 @@
  * check if a given parameter is an object
  * @param {any} obj
  */
-export const isObject = (obj) => {
-  return typeof obj === 'object' && !!obj;
-};
+export const isObject = (obj) => (typeof obj === 'object' && !!obj);
 
 /**
  * check if two objects share equal properties and values

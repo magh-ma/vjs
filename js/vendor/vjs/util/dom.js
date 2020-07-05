@@ -3,5 +3,5 @@
  * @param {HTMLElement|DocumentFragment} element
  */
 export const flushElement = (element) => {
-  while(element.firstChild) element.removeChild(element.lastChild);
+  while (element.firstChild) element.removeChild(element.lastChild);
 };

@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2020
  * Samuel Weber, Rankweil, Austria
- * 
+ *
  * @author Samuel Weber <info@samuelweber.at>
  * @version 0.1
- * 
+ *
  * @requires '.
  * @requires './../util/dom.js:flushElement
  * @requires './../util/object.js:isEqual
@@ -24,7 +24,7 @@ import {
   EVT_BEFORE_LEAVE,
   EVT_AFTER_LEAVE,
   EVT_BEFORE_ENTER,
-  EVT_AFTER_ENTER
+  EVT_AFTER_ENTER,
 } from './../constants.js';
 
 /**
@@ -32,13 +32,11 @@ import {
  * Router for SPAs utilizing native web components
  */
 export class Router {
-
   /**
    * initialize Router
    * @param {Object.<string, any>} [options]
    */
   constructor(options = DEFAULT_OPTIONS) {
-
     /**
      * holds the configuration of the router
      * @private
@@ -78,13 +76,13 @@ export class Router {
     // set default location state
     this._setLocation(DEFAULT_LOCATION_STATE);
     // init all view components if required
-    if(this._options.initViewsAtStart) {
+    if (this._options.initViewsAtStart) {
       this._resolver.getRoutes().forEach((r) => this._initComponent(r.component));
     }
     // scan HTMLElement for HTMLAnchorElements and
-    // add eventListener 
-    if(this._options.anchorScan && this._options.anchorScan instanceof HTMLElement) {
-      this._anchorScan(this._options.anchorScan)
+    // add eventListener
+    if (this._options.anchorScan && this._options.anchorScan instanceof HTMLElement) {
+      this._anchorScan(this._options.anchorScan);
     }
 
     window.addEventListener('popstate', this._onPopState);
@@ -93,7 +91,7 @@ export class Router {
   /**
    * sets location state
    * @private
-   * @param {RouterLocation} location 
+   * @param {RouterLocation} location
    */
   _setLocation(location) {
     this._location = {
@@ -124,7 +122,7 @@ export class Router {
   /**
    * initialize component and add it to the cache
    * @private
-   * @param {string} componentKey 
+   * @param {string} componentKey
    */
   _initComponent(componentKey) {
     const component = /** @type {ViewComponent} **/(document.createElement(componentKey));
@@ -138,7 +136,7 @@ export class Router {
    */
   _displayComponent(state) {
     // init component if not already in cache
-    if(!this._cache.has(state.componentKey)) {
+    if (!this._cache.has(state.componentKey)) {
       this._initComponent(state.componentKey);
     }
 
@@ -154,7 +152,7 @@ export class Router {
 
   /**
    * @private
-   * @param {string} type 
+   * @param {string} type
    * @param {object} detail
    */
   _dispatchRouterEvent(type, detail) {
@@ -168,9 +166,9 @@ export class Router {
    * @returns {ViewComponent}
    */
   _getCachedComponentByKey(componentKey) {
-    if(componentKey === null) return null;
+    if (componentKey === null) return null;
 
-    if(!this._cache.has(componentKey)) {
+    if (!this._cache.has(componentKey)) {
       this._initComponent(componentKey);
     }
     return this._cache.get(componentKey);
@@ -178,29 +176,29 @@ export class Router {
 
   /**
    * @private
-   * @param {ViewComponent} component 
-   * @param {string} callbackName 
-   * @param {string} eventIdentifier 
-   * @param {object} payload 
+   * @param {ViewComponent} component
+   * @param {string} callbackName
+   * @param {string} eventIdentifier
+   * @param {object} payload
    */
   _runHookIfAvailable(component, callbackName, eventIdentifier, payload) {
     // check if there is a callback we have to invoke
-    if(typeof component[callbackName] === 'function') {
+    if (typeof component[callbackName] === 'function') {
       // invoke callback
       component[callbackName](payload);
     }
-    
+
     // dispatch beforeLeave event
     this._dispatchRouterEvent(eventIdentifier, payload);
   }
 
   /**
    * produces a log entry in the devTools if enabled in options
-   * @param {string} reference 
-   * @param {any} payload 
+   * @param {string} reference
+   * @param {any} payload
    */
   _log(reference, payload) {
-    if(this._options.debug) {
+    if (this._options.debug) {
       console.log(reference, payload);
     }
   }
@@ -208,11 +206,11 @@ export class Router {
   /**
    * click handler for navigation anchor
    * @private
-   * @param {MouseEvent} e 
+   * @param {MouseEvent} e
    */
   _onAnchorClick(e) {
     e.preventDefault();
-    const pathname = /** @type {HTMLAnchorElement} **/(e.target).pathname;
+    const { pathname } = /** @type {HTMLAnchorElement} **/(e.target);
     this._dispatchRouterEvent(EVT_CLICK, { pathname });
     this.goTo(pathname);
   }
@@ -229,12 +227,12 @@ export class Router {
   /**
    * set options for router configuration
    * @public
-   * @param {Object.<string, any>} options 
+   * @param {Object.<string, any>} options
    */
   setOptions(options) {
     this._options = {
       ...DEFAULT_OPTIONS,
-      ...options
+      ...options,
     };
 
     this.setRoutes(this._options.routes);
@@ -252,13 +250,13 @@ export class Router {
   /**
    * load component by url
    * @public
-   * @param {string} url 
+   * @param {string} url
    */
   goTo(url) {
     this._resolver.resolve(url)
       .then((state) => {
         // guard clause checking if there is a state change
-        if(!isEqual(this._getLocation(), state)) {
+        if (!isEqual(this._getLocation(), state)) {
           // compose detail object
           const detail = {
             prevLocation: this._getLocation(),
@@ -266,7 +264,7 @@ export class Router {
           };
           // fetch current view component if possible
           const prevComponent = this._getCachedComponentByKey(this._getLocation().componentKey);
-          if(prevComponent !== null) {
+          if (prevComponent !== null) {
             // run lifecycle hooks if available
             this._runHookIfAvailable(prevComponent, 'onBeforeLeave', EVT_BEFORE_LEAVE, detail);
           }
@@ -275,7 +273,7 @@ export class Router {
           window.history.pushState(state, '', state.pathname);
           this._dispatchRouterEvent(EVT_POPSTATE, state);
 
-          if(prevComponent !== null) {
+          if (prevComponent !== null) {
             // run lifecycle hooks if available
             this._runHookIfAvailable(prevComponent, 'onAfterLeave', EVT_AFTER_LEAVE, detail);
           }
@@ -315,7 +313,7 @@ export class Router {
   /**
    * removes a route from the existing configuration
    * @public
-   * @param {RouterRoute} route 
+   * @param {RouterRoute} route
    */
   removeRoute(route) {
     this._resolver.removeRoute(route);
@@ -325,7 +323,7 @@ export class Router {
    * remove a route from the existing configuration
    * filtered by the path property of the route object
    * @public
-   * @param {string} path 
+   * @param {string} path
    */
   removeRouteByPath(path) {
     this._resolver.removeRouteByPath(path);
