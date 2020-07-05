@@ -1,20 +1,3 @@
-// TODO
-//
-// implement eslint
-// create readme :facepalm:
-// create changelog for repo
-// implement logLevels
-// add type definition for lifecycle method parameter
-//
-// redirects
-// animated transitions
-// test in firefox und safari
-// lazy loading
-// error handling
-
-// REFACTORING
-// * "typecast" options into map?
-
 /**
  * Copyright (c) 2020
  * Samuel Weber, Rankweil, Austria
