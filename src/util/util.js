@@ -16,3 +16,12 @@ export const isObject = (obj) => (typeof obj === 'object' && !!obj);
  * @return {boolean}
  */
 export const isEqual = (a, b) => (JSON.stringify(a) === JSON.stringify(b));
+
+/**
+ * removes all children from a HTMLElement or DocumentFragment
+ * @param {HTMLElement|DocumentFragment} element
+ */
+export const flushElement = (element) => {
+  while (element.firstChild) element.removeChild(element.lastChild);
+};
+

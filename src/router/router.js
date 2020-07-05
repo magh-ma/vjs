@@ -2,26 +2,23 @@
  * @author Samuel Weber <info@samuelweber.at>
  * @version 0.1-alpha
  *
- * @requires '.
- * @requires './../util/dom.js:flushElement
- * @requires './../util/object.js:isEqual
  * @requires './resolver.js:Resolver
- * @requires './../constants.js:DEFAULT_OPTIONS
- * @requires './../constants.js:DEFAULT_LOCATION_STATE
+ * @requires './../util/util.js:flushElement
+ * @requires './../util/util.js:isEqual
+ * @requires './../constants.js:ROUTER_DEFAULT_OPTIONS
+ * @requires './../constants.js:VIEW_DEFAULT_LOCATION_STATE
  */
-import './../types.js';
-import { flushElement } from './../util/dom.js';
-import { isEqual } from './../util/object.js';
 import { Resolver } from './resolver.js';
+import { flushElement, isEqual } from './../util/util.js';
 import {
-  DEFAULT_OPTIONS,
-  DEFAULT_LOCATION_STATE,
-  EVT_CLICK,
-  EVT_POPSTATE,
-  EVT_BEFORE_LEAVE,
-  EVT_AFTER_LEAVE,
-  EVT_BEFORE_ENTER,
-  EVT_AFTER_ENTER,
+  ROUTER_DEFAULT_OPTIONS,
+  VIEW_DEFAULT_LOCATION_STATE,
+  ROUTER_EVT_CLICK,
+  ROUTER_EVT_POPSTATE,
+  VIEW_EVT_BEFORE_LEAVE,
+  VIEW_EVT_AFTER_LEAVE,
+  VIEW_EVT_BEFORE_ENTER,
+  VIEW_EVT_AFTER_ENTER,
 } from './../constants.js';
 
 /**
@@ -33,7 +30,7 @@ export class Router {
    * initialize Router
    * @param {Object.<string, any>} [options]
    */
-  constructor(options = DEFAULT_OPTIONS) {
+  constructor(options = ROUTER_DEFAULT_OPTIONS) {
     /**
      * holds the configuration of the router
      * @private
@@ -71,7 +68,7 @@ export class Router {
     // set merged options
     this.setOptions(options);
     // set default location state
-    this._setLocation(DEFAULT_LOCATION_STATE);
+    this._setLocation(VIEW_DEFAULT_LOCATION_STATE);
     // init all view components if required
     if (this._options.initViewsAtStart) {
       this._resolver.getRoutes().forEach((r) => this._initComponent(r.component));
@@ -208,7 +205,7 @@ export class Router {
   _onAnchorClick(e) {
     e.preventDefault();
     const { pathname } = /** @type {HTMLAnchorElement} **/(e.target);
-    this._dispatchRouterEvent(EVT_CLICK, { pathname });
+    this._dispatchRouterEvent(ROUTER_EVT_CLICK, { pathname });
     this.goTo(pathname);
   }
 
@@ -228,7 +225,7 @@ export class Router {
    */
   setOptions(options) {
     this._options = {
-      ...DEFAULT_OPTIONS,
+      ...ROUTER_DEFAULT_OPTIONS,
       ...options,
     };
 
@@ -263,27 +260,27 @@ export class Router {
           const prevComponent = this._getCachedComponentByKey(this._getLocation().componentKey);
           if (prevComponent !== null) {
             // run lifecycle hooks if available
-            this._runHookIfAvailable(prevComponent, 'onBeforeLeave', EVT_BEFORE_LEAVE, detail);
+            this._runHookIfAvailable(prevComponent, 'onBeforeLeave', VIEW_EVT_BEFORE_LEAVE, detail);
           }
 
           // update history and dispatch popstate event
           window.history.pushState(state, '', state.pathname);
-          this._dispatchRouterEvent(EVT_POPSTATE, state);
+          this._dispatchRouterEvent(ROUTER_EVT_POPSTATE, state);
 
           if (prevComponent !== null) {
             // run lifecycle hooks if available
-            this._runHookIfAvailable(prevComponent, 'onAfterLeave', EVT_AFTER_LEAVE, detail);
+            this._runHookIfAvailable(prevComponent, 'onAfterLeave', VIEW_EVT_AFTER_LEAVE, detail);
           }
 
           const nextComponent = this._getCachedComponentByKey(state.componentKey);
           // run lifecycle hooks if available
-          this._runHookIfAvailable(nextComponent, 'onBeforeEnter', EVT_BEFORE_ENTER, detail);
+          this._runHookIfAvailable(nextComponent, 'onBeforeEnter', VIEW_EVT_BEFORE_ENTER, detail);
 
           // display component
           this._displayComponent(state);
 
           // run lifecycle hooks if available
-          this._runHookIfAvailable(nextComponent, 'onAfterEnter', EVT_AFTER_ENTER, detail);
+          this._runHookIfAvailable(nextComponent, 'onAfterEnter', VIEW_EVT_AFTER_ENTER, detail);
         }
       })
       .catch((err) => console.log('error>', err));

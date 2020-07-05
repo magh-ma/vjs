@@ -1,8 +1,8 @@
 /**
  * default options
- * @type {RouterOptions} DEFAULT_OPTIONS
+ * @type {RouterOptions} ROUTER_DEFAULT_OPTIONS
  */
-export const DEFAULT_OPTIONS = {
+export const ROUTER_DEFAULT_OPTIONS = {
   container: null,
   routes: [],
   initViewsAtStart: false,
@@ -12,11 +12,11 @@ export const DEFAULT_OPTIONS = {
 
 /**
  * default location state
- * @type {RouterLocation} DEFAULT_LOCATION_STATE
+ * @type {RouterLocation} VIEW_DEFAULT_LOCATION_STATE
  * @property {Object.<string, string>} parameter
  * @property {string} component
  */
-export const DEFAULT_LOCATION_STATE = {
+export const VIEW_DEFAULT_LOCATION_STATE = {
   componentKey: null,
   parameter: {},
   pathname: null,
@@ -26,19 +26,19 @@ export const DEFAULT_LOCATION_STATE = {
  * @constant
  * @type {string} string identifier for the vjs router click event
  */
-export const EVT_CLICK = 'vjs:router:click';
+export const ROUTER_EVT_CLICK = 'vjs:router:click';
 
 /**
  * @constant
  * @type {string} string identifier for the vjs router popstate event
  */
-export const EVT_POPSTATE = 'vjs:router:popstate';
+export const ROUTER_EVT_POPSTATE = 'vjs:router:popstate';
 
 /**
  * @constant
  * @type {string} string identifier for the vjs router beforeLeave event
  */
-export const EVT_BEFORE_LEAVE = 'vjs:view:beforeLeave';
+export const VIEW_EVT_BEFORE_LEAVE = 'vjs:view:beforeLeave';
 /**
  * @author Samuel Weber <info@samuelweber.at>
  * @version 0.1-alpha
@@ -48,16 +48,16 @@ export const EVT_BEFORE_LEAVE = 'vjs:view:beforeLeave';
  * @constant
  * @type {string} string identifier for the vjs router afterLeave event
  */
-export const EVT_AFTER_LEAVE = 'vjs:view:afterLeave';
+export const VIEW_EVT_AFTER_LEAVE = 'vjs:view:afterLeave';
 
 /**
  * @constant
  * @type {string} string identifier for the vjs router beforeEnter event
  */
-export const EVT_BEFORE_ENTER = 'vjs:view:beforeEnter';
+export const VIEW_EVT_BEFORE_ENTER = 'vjs:view:beforeEnter';
 
 /**
  * @constant
  * @type {string} string identifier for the vjs router afterEnter event
  */
-export const EVT_AFTER_ENTER = 'vjs:view:afterEnter';
+export const VIEW_EVT_AFTER_ENTER = 'vjs:view:afterEnter';

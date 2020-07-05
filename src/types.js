@@ -1,4 +1,9 @@
 /**
+ * this file only exists for documentation and some IDEs
+ * can utilize this file too
+ */
+
+/**
  * private route
  * @typedef {Object} IResolverRoute
  * @property {RegExp} matchExp - RegExp used to match urls
@@ -52,4 +57,3 @@
  * @property {Object.<string, string>} parameter - holds the parameter of the location
  * @property {string} pathname - string of the current pathname
  */
-
