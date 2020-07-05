@@ -1,9 +1,6 @@
 /**
- * Copyright (c) 2020
- * Samuel Weber, Rankweil, Austria
- *
  * @author Samuel Weber <info@samuelweber.at>
- * @version 0.1
+ * @version 0.1-alpha
  *
  * @requires '.
  * @requires './../util/dom.js:flushElement

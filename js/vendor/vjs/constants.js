@@ -39,6 +39,10 @@ export const EVT_POPSTATE = 'vjs:router:popstate';
  * @type {string} string identifier for the vjs router beforeLeave event
  */
 export const EVT_BEFORE_LEAVE = 'vjs:view:beforeLeave';
+/**
+ * @author Samuel Weber <info@samuelweber.at>
+ * @version 0.1-alpha
+ */
 
 /**
  * @constant

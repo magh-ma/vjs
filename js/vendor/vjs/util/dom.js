@@ -1,4 +1,9 @@
 /**
+ * @author Samuel Weber <info@samuelweber.at>
+ * @version 0.1-alpha
+ */
+
+/**
  * removes all children from a HTMLElement or DocumentFragment
  * @param {HTMLElement|DocumentFragment} element
  */

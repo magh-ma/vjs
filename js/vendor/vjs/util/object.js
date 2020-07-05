@@ -1,4 +1,9 @@
 /**
+ * @author Samuel Weber <info@samuelweber.at>
+ * @version 0.1-alpha
+ */
+
+/**
  * check if a given parameter is an object
  * @param {any} obj
  */
